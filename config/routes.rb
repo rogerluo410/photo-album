@@ -1,6 +1,14 @@
 Photoalbum::Application.routes.draw do
   get "photos/index"
 
+  resources :photos do
+      resources :comments do
+
+      end
+  end
+
+  #root to: 'photos/index'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
