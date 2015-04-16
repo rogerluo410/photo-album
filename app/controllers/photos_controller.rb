@@ -6,8 +6,10 @@ class PhotosController < ApplicationController
 
   def create
       @photo = Photo.new
-      @photo.photo_name = params[:photoname]
-      #@photo.photo_addr =
+      tempIO = params[:originalPhoto]
+      @photo.photo_name = params[:photoName]
+      @photo.photo_code = Time.now.to_i.to_s+tempIO.original_filename.force_encoding("UTF-8")
+      @photo.photo_addr = 'public/uploads/'
 
   end
 
