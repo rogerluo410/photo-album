@@ -5,6 +5,15 @@ class Photo < ActiveRecord::Base
   validate :photo_name, presence:true, on: :create
   validate :photo_addr, presense:true, on: :create
 
+  #scope :get_start_timestamp, lambda { select(:created_at).order(created_at: :desc).first }
+  #scope :get_start_timestamp, lambda { order(created_at: :desc).first.pluck(:created_at) }
+  #scope :get_start_timestamp, lambda { order(created_at: :desc).first }
+  scope :get_start_timestamp, lambda { where("id < 5") }
 
+  def uploadImageFile(filePath,fileIO)
+      File.open(filePath,'w') do | file |
+         file.write(fileIO.read.force_encoding("UTF-8"))
+      end
+  end
 
 end
