@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
@@ -12,6 +13,8 @@
   <link rel='stylesheet' href='css/bootstrap.min.css'>
 
     <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/window.css">
 
 </head>
 
@@ -31,6 +34,7 @@
             <li><a href="#accueil">Home</a></li>
             <li><a href="#gallery">Gallery</a></li>
             <li><a href="#contact">Contact</a></li>
+              <li><a href="javascript:void(0)" id="upload-window" onclick="postNewPhotoWindow()" >Post New Photo</a></li>
           </ul>
         </div>
     </div>
@@ -182,6 +186,43 @@
         </a>
     </figure>
 </div>
+
+  <div id="post-window" title="Dialog Upload Packages List " style="width: 350px; height: 220px;">
+
+      <p>
+          <label for="image_uploader_multiple">Image:</label>
+      </p>
+      <form>
+          <table width="70%" id="multi_file_uploader">
+              <tbody>
+              <tr class="imageSelectorContainer">
+                  <td valign="top">
+                      <input type="file" name="image_uploader_multiple[]" value="" class="multipleImageFileInput" style="width:50%" onchange="show_image_preview(this);" accept="image/*" multiple="">
+                      <table class="imagePreviewTable"></table>
+                  </td>
+                  <td valign="top" align="right">
+                      <input type="button" value="X" title="Remove" class="removeButton" style="display:none;" onclick="remove_file_uploader(this)">
+                  </td>
+                  <td valign="top"><input type="button" value="+" title="Add" class="addButton" style="" onclick="add_new_file_uploader(this)"> </td>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr>
+                  <td colspan="3" class="buttonBox">
+                      <input type="submit" value="Save Images">
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+      </form>
+
+      <div style="text-align: center; padding: 5px;">
+          <a href="javascript:void(0)" onclick="savefileData()" id="btn-save" icon="icon-save"><text class='highcharts-title'  style='color:#274b6d;font-size:16px;fill:#274b6d;'>Upload</text></a>
+          <a href="javascript:void(0)" onclick="closePostWindow()" id="btn-cancel" icon="icon-cancel"> <text class='highcharts-title'  style='color:#274b6d;font-size:16px;fill:#274b6d;'>Cancel</text></a>
+      </div>
+  </div>
+
+
 <form role="form" id="contact">
   <div class="form-group">
     <h1>Contact</h1>
@@ -192,10 +233,10 @@
   <button type="submit" class="form-control btn btn-default submit">Submit</button>
 </form>
 
-  <script src='js/jquery.js'></script>
-  <script src='js/bootstrap.min.js'></script>
-
-  <script src="js/index.js"></script>
+  <script src='js/jquery.js' type="text/javascript"></script>
+  <script src='js/bootstrap.min.js' type="text/javascript"></script>
+  <script src="js/jquery.easyui.min.js" type="text/javascript"></script>
+  <script src="js/index.js" type="text/javascript"></script>
 
 </body>
 

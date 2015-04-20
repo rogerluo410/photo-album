@@ -7,15 +7,16 @@ class PhotosController < ApplicationController
 
   def create
       @photo = Photo.new
-      tempIO = params[:photo][:originalFile]
-      @photo.photo_name = params[:photo][:photoName]
-      @photo.photo_code = Time.now.to_i.to_s+tempIO.original_filename.force_encoding("UTF-8")
+      tempIO = params[:image_uploader_multiple]["0"].tempfile
+      p tempIO
+      @photo.photo_name = params[:image_uploader_multiple]["0"].original_filename
+      @photo.photo_code = Time.now.to_i.to_s+@photo.photo_name.force_encoding("UTF-8")
       @photo.photo_addr = "public/uploads/#{@photo.photo_code}"
-      @photo.photo_desc = params[:photo][:photoDesc]
+      @photo.photo_desc = "No,In present"#params[:photo][:photoDesc]
       if @photo.save && @photo.uploadImageFile(@photo.photo_addr,tempIO)
-         render :text => "ok", :status => 200
+         render :json => {:stat => "ok"}, :status => 200
       else
-         render :text => "error", :status => 200
+         render :json => {:stat => "error"}, :status => 200
       end
   rescue ActiveRecord::RecordInvalid
      redirect_to :action => 'index', :alert => "#{@photo.errors.messages}"

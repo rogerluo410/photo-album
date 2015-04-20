@@ -1,5 +1,6 @@
 Photoalbum::Application.routes.draw do
-  get "photos/index"
+  get "welcome/index"
+  #get "photos/index"
 
   resources :photos do
       resources :comments do
