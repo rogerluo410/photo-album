@@ -38,6 +38,7 @@ function postNewPhotoWindow() {
 }
 
 function closePostWindow() {
+    postPhotoForm.form('clear');
     postPhotoWin.window('close');
 }
 
@@ -158,12 +159,13 @@ function upload_images_selected(event, formObj)
     var number_of_inputs = $(fileInputs).length;
     var inputCount = 0;
 
+    // Create a new FormData object.
+    var formData = new FormData();
     //Iterate through each file selector input
     $(fileInputs).each(function(index, input){
 
         fileList = input.files;
-        // Create a new FormData object.
-        var formData = new FormData();
+
         //Extra parameters can be added to the form data object
         formData.append('bulk_upload', '1');
         formData.append('username', $('input[name="username"]').val());
@@ -179,47 +181,50 @@ function upload_images_selected(event, formObj)
                 formData.append('image_uploader_multiple[' +(inputCount++)+ ']', file, file.name);
             }
         }
-        // Set up the request.
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', url, true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var jsonResponse = JSON.parse(xhr.responseText);
-                if (jsonResponse.status == 1) {
-                    $(jsonResponse.file_info).each(function(){
-                        //Iterate through response and find data corresponding to each file uploaded
-                        var uploaded_file_name = this.original;
-                        var saved_file_name = this.target;
-                        var file_name_input = '<input type="hidden" class="image_name" name="image_names[]" value="' +saved_file_name+ '" />';
-                        file_info_container.append(file_name_input);
 
-                        imageCount--;
-                    })
-                    //Decrement count of inputs to find all images selected by all multi select are uploaded
-                    number_of_inputs--;
-                    if(number_of_inputs == 0) {
-                        //All images selected by each file selector is uploaded
-                        //Do necessary acteion post upload
-                        $('.overlay').hide();
-                    }
-                } else {
-                    if (typeof jsonResponse.error_field_name != 'undefined') {
-                        //Do appropriate error action
-                    } else {
-                        alert(jsonResponse.message);
-                    }
+    })
+
+    // Set up the request.
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var jsonResponse = JSON.parse(xhr.responseText);
+            if (jsonResponse.status == 1) {
+                $(jsonResponse.file_info).each(function(){
+                    //Iterate through response and find data corresponding to each file uploaded
+                    var uploaded_file_name = this.original;
+                    var saved_file_name = this.target;
+                    var file_name_input = '<input type="hidden" class="image_name" name="image_names[]" value="' +saved_file_name+ '" />';
+                    file_info_container.append(file_name_input);
+
+                    imageCount--;
+                })
+                //Decrement count of inputs to find all images selected by all multi select are uploaded
+                number_of_inputs--;
+                if(number_of_inputs == 0) {
+                    //All images selected by each file selector is uploaded
+                    //Do necessary action post upload
                     $('.overlay').hide();
-                    event.preventDefault();
-                    return false;
                 }
             } else {
-                /*alert('Something went wrong!');*/
+                if (typeof jsonResponse.error_field_name != 'undefined') {
+                    //Do appropriate error action
+                } else {
+                    alert(jsonResponse.message);
+                }
                 $('.overlay').hide();
                 event.preventDefault();
+                return false;
             }
-        };
-        xhr.send(formData);
-    })
+            closePostWindow()
+        } else {
+            /*alert('Something went wrong!');*/
+            $('.overlay').hide();
+            event.preventDefault();
+        }
+    };
+    xhr.send(formData);
 
     return false;
 }

@@ -6,7 +6,9 @@ class Photo < ActiveRecord::Base
   validate :photo_addr, presense:true, on: :create
 
   #callback
-  before_save :checkImageUploaded
+  before_save    :checkImageUploaded
+  after_rollback :deleteImages
+
   #scope :get_start_timestamp, lambda { select(:created_at).order(created_at: :desc).first }
   #scope :get_start_timestamp, lambda { order(created_at: :desc).first.pluck(:created_at) }
   #scope :get_start_timestamp, lambda { order(created_at: :desc).first }
@@ -22,6 +24,13 @@ class Photo < ActiveRecord::Base
       p "Enter  checkImageUploaded callback"
       return true if File.exist?(self.photo_addr)
       return false
+  end
+
+  def deleteImages
+      p "Enter  deleteImages callback"
+      if File.exist?(self.photo_addr)
+         File.delete(self.photo_addr)
+      end
   end
 
 end
