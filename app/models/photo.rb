@@ -5,6 +5,8 @@ class Photo < ActiveRecord::Base
   validate :photo_name, presence:true, on: :create
   validate :photo_addr, presense:true, on: :create
 
+  #callback
+  before_save :checkImageUploaded
   #scope :get_start_timestamp, lambda { select(:created_at).order(created_at: :desc).first }
   #scope :get_start_timestamp, lambda { order(created_at: :desc).first.pluck(:created_at) }
   #scope :get_start_timestamp, lambda { order(created_at: :desc).first }
@@ -14,6 +16,12 @@ class Photo < ActiveRecord::Base
       File.open(filePath,'w') do | file |
          file.write(fileIO.read.force_encoding("UTF-8"))
       end
+  end
+
+  def checkImageUploaded
+      p "Enter  checkImageUploaded callback"
+      return true if File.exist?(self.photo_addr)
+      return false
   end
 
 end
