@@ -3,6 +3,10 @@ class PhotosController < ApplicationController
     @photos = Photo.all
     #p Photo.get_start_timestamp
     render :json => {:stat => "ok",:photos => @photos } , :status => 200
+    #respond_to do | format |
+    #   #format.html
+    #   format.json { render json: @photos.to_json }
+    #end
   end
 
   def create
