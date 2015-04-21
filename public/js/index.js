@@ -11,6 +11,17 @@ $(document).ready(function() {
 			}
 			});
 
+    $.ajax( {
+        url: '/photos',
+        type:'get',
+        success:function(data) {
+            alert(data.photos)
+        },
+        error:function() {
+            alert("Get Images error");
+        }
+    });
+
 			}); //end
 
 var postPhotoWin;
