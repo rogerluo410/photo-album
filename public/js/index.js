@@ -11,18 +11,81 @@ $(document).ready(function() {
 			}
 			});
 
+    params = {
+        mask:$('#images-mask'),
+        elements:$('#images-mask img'),
+        prevbtn:$('#prev-button'),
+        nextbtn:$('#next-button'),
+        displaytype:'column',
+        elementsByRow:3,
+        rowsDisplayed:2
+    };
+    $('#gallery').magicScroller( params );
+
+    getLatestPhotos()
+			}); //end
+
+this.imagePreview = function(){
+    /* CONFIG */
+
+    xOffset = 10;
+    yOffset = 30;
+
+    // these 2 variable determine popup's distance from the cursor
+    // you might want to adjust to get the right result
+
+    /* END CONFIG */
+    $("a.preview").hover(function(e){
+            this.t = this.title;
+            this.title = "";
+            var c = (this.t != "") ? "<br/>" + this.t : "";
+            $("body").append("<p id='preview'><img src='"+ this.href +"' alt='Image preview' />"+ c +"</p>");
+            $("#preview")
+                .css("top",(e.pageY - xOffset) + "px")
+                .css("left",(e.pageX + yOffset) + "px")
+                .fadeIn("fast");
+        },
+        function(){
+            this.title = this.t;
+            $("#preview").remove();
+        });
+    $("a.preview").mousemove(function(e){
+        $("#preview")
+            .css("top",(e.pageY - xOffset) + "px")
+            .css("left",(e.pageX + yOffset) + "px");
+    });
+};
+
+
+// starting the script on page load
+$(document).ready(function(){
+    imagePreview();
+});
+
+
+function getLatestPhotos() {
     $.ajax( {
         url: '/photos',
         type:'get',
         success:function(data) {
-            alert(data.photos)
+            //alert(data.photos)
+            var sData =  JSON.stringify(data);
+            var jData =  JSON.parse(sData);
+            //alert(jData["photos"])
+            var images = ""
+            for (var i in jData["photos"]) {
+                //alert (i)
+                 images += '<a href="#" class="preview"><img class="img" src="'+ escape(jData["photos"][i]["photo_addr"]) +'" alt="" /></a>';
+
+            }
+            $('#images-mask').html($(images));
+
         },
         error:function() {
             alert("Get Images error");
         }
     });
-
-			}); //end
+}
 
 var postPhotoWin;
 var postPhotoForm;
@@ -200,35 +263,43 @@ function upload_images_selected(event, formObj)
     xhr.open('POST', url, true);
     xhr.onload = function () {
         if (xhr.status === 200) {
-            var jsonResponse = JSON.parse(xhr.responseText);
-            if (jsonResponse.status == 1) {
-                $(jsonResponse.file_info).each(function(){
-                    //Iterate through response and find data corresponding to each file uploaded
-                    var uploaded_file_name = this.original;
-                    var saved_file_name = this.target;
-                    var file_name_input = '<input type="hidden" class="image_name" name="image_names[]" value="' +saved_file_name+ '" />';
-                    file_info_container.append(file_name_input);
+               //alert(xhr.responseText)
+               var jsonResponse = JSON.parse(xhr.responseText);
+               //alert(jsonResponse["stat"])
+                if (jsonResponse["stat"] == "ok") {
+                    /*$(jsonResponse.file_info).each(function(){
+                        //Iterate through response and find data corresponding to each file uploaded
+                        var uploaded_file_name = this.original;
+                        var saved_file_name = this.target;
+                        var file_name_input = '<input type="hidden" class="image_name" name="image_names[]" value="' +saved_file_name+ '" />';
+                        file_info_container.append(file_name_input);
 
-                    imageCount--;
-                })
-                //Decrement count of inputs to find all images selected by all multi select are uploaded
-                number_of_inputs--;
-                if(number_of_inputs == 0) {
-                    //All images selected by each file selector is uploaded
-                    //Do necessary action post upload
-                    $('.overlay').hide();
-                }
-            } else {
-                if (typeof jsonResponse.error_field_name != 'undefined') {
-                    //Do appropriate error action
+                        imageCount--;
+                    })*/
+                    //Decrement count of inputs to find all images selected by all multi select are uploaded
+                    //number_of_inputs--;
+                    //if(number_of_inputs == 0) {
+                        //All images selected by each file selector is uploaded
+                        //Do necessary action post upload
+                        $('.overlay').hide();
+                        $('.imagePreviewTable').hide();
+                        closePostWindow()
+
+                   // }
                 } else {
-                    alert(jsonResponse.message);
+                    /*if (typeof jsonResponse.error_field_name != 'undefined') {
+                        //Do appropriate error action
+                    } else {
+                        alert(jsonResponse.message);
+                    }*/
+                    $('.overlay').hide();
+                    event.preventDefault();
+                    return false;
                 }
-                $('.overlay').hide();
-                event.preventDefault();
-                return false;
-            }
-            closePostWindow()
+
+
+
+
         } else {
             /*alert('Something went wrong!');*/
             $('.overlay').hide();

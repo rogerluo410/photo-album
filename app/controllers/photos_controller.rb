@@ -25,8 +25,8 @@ class PhotosController < ApplicationController
               end
            end
       end
-      #render :json => {:stat => "ok" , :options => {:skip => true}}, :status => 200
-      redirect_to :action => 'index'
+      render :json => {:stat => "ok" , :options => {:skip => true}}, :status => 200
+      #redirect_to :action => 'index'
   rescue ActiveRecord::RecordInvalid => e
      redirect_to :action => 'index', :alert => "#{e.message}"
   end
@@ -44,6 +44,44 @@ class PhotosController < ApplicationController
 
   def new
       @photo = Photo.new
+  end
+
+  def getRealImage
+      image = "public/uploads/#{params[:id]}"
+      imageFile = ""
+      extname = File.extname(params[:id])[1..-1]
+      mime_type = Mime::Type.lookup_by_extension(extname)
+      content_type = mime_type.to_s unless mime_type.nil?
+      p content_type
+      File.open(image,'r') do | file |
+           imageFile  = file.read
+      end
+      imageFile ||= ""
+      #render :text => imageFile #=> Resource interpreted as Image but transferred with MIME type text/html
+      render :text => imageFile, :content_type => content_type
+=begin
+  #set content_type
+  #http://stackoverflow.com/questions/299999/rendering-file-with-mime-type-in-rails
+  class FileController < ApplicationController
+
+  def index
+    filename = 'some.xml'
+
+    extname = File.extname(filename)[1..-1]
+    mime_type = Mime::Type.lookup_by_extension(extname)
+    content_type = mime_type.to_s unless mime_type.nil?
+
+    # 1
+    #headers['Content-Type'] = content_type
+    #render :file => filename
+
+    # 2
+    render :file => filename, :content_type => content_type
+  end
+
+end
+=end
+
   end
 
 end

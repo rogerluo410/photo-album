@@ -2,6 +2,8 @@ Photoalbum::Application.routes.draw do
   get "welcome/index"
   #get "photos/index"
 
+  get '/public/uploads/:id', to: 'photos#getRealImage', :constraints => { :id => /.*/ }
+
   resources :photos do
       resources :comments do
 
