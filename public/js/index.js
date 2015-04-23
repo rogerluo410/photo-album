@@ -75,7 +75,7 @@ function getLatestPhotos() {
             var images = ""
             for (var i in jData["photos"]) {
                 //alert (i)
-                 images += '<a href="#" class="preview"><img class="img" src="'+ escape(jData["photos"][i]["photo_addr"]) +'" alt="" /></a>';
+                 images += '<a href="#" class="preview"><img class="img" src="'+ jData["photos"][i]["photo_addr"] +'" alt="" /></a>';
 
             }
             $('#images-mask').html($(images));
