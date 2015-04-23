@@ -58,9 +58,9 @@ this.imagePreview = function(){
 
 
 // starting the script on page load
-$(document).ready(function(){
+/*$(document).ready(function(){
     imagePreview();
-});
+});*/
 
 
 function getLatestPhotos() {
@@ -75,11 +75,14 @@ function getLatestPhotos() {
             var images = ""
             for (var i in jData["photos"]) {
                 //alert (i)
-                 images += '<a href="#" class="preview"><img class="img" src="'+ jData["photos"][i]["photo_addr"] +'" alt="" /></a>';
+                 images += '<li><a href="'+ jData["photos"][i]["photo_addr"] +'" class="preview"><img class="img" src="'+ jData["photos"][i]["photo_addr"] +'" alt="" /></a></li>';
 
             }
-            $('#images-mask').html($(images));
-
+            $('#iw_thumbs').html($(images));
+            // starting the script on page load
+            $(document).ready(function(){
+                imagePreview();
+            });
         },
         error:function() {
             alert("Get Images error");
