@@ -1,4 +1,7 @@
 class PhotosController < ApplicationController
+  force_ssl only: :index
+
+
   def index
     @photos = Photo.all
     #p Photo.get_start_timestamp
