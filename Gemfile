@@ -8,6 +8,8 @@ gem 'rails', '3.2.13'
 
 gem 'sqlite3'
 
+gem 'rack','1.4.5'  #solve NoMethodError (undefined method `options' for {}:Hash)   commit_session
+                    #when render in controller
 
 # Gems used only for assets and not required
 # in production environments by default.
